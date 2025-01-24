@@ -1,0 +1,7 @@
+@import "tailwindcss";
+
+@theme {
+    --font-bai: 'Bai Jamjuree', sans-serif;
+    --font-bruno: 'Bruno Ace', sans-serif;
+    --font-caveat: 'Caveat', cursive;
+}
