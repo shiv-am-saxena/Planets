@@ -2,11 +2,11 @@
 
 @font-face {
     font-family: 'Bai Jamjuree';
-    src: url('./BaiJamjuree-Regular.ttf');
+    src: url('../public/BaiJamjuree-Regular.ttf');
 }
 @font-face {
     font-family: 'Bruno Ace';
-    src: url('./BrunoAce-Regular.ttf');
+    src: url('../public/BrunoAce-Regular.ttf');
 }
 @theme {
     --font-bai: 'Bai Jamjuree', sans-serif;
