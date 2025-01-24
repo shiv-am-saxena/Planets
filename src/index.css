@@ -1,7 +1,14 @@
 @import "tailwindcss";
 
+@font-face {
+    font-family: 'Bai Jamjuree';
+    src: url('./BaiJamjuree-Regular.ttf');
+}
+@font-face {
+    font-family: 'Bruno Ace';
+    src: url('./BrunoAce-Regular.ttf');
+}
 @theme {
     --font-bai: 'Bai Jamjuree', sans-serif;
     --font-bruno: 'Bruno Ace', sans-serif;
-    --font-caveat: 'Caveat', cursive;
 }
