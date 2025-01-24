@@ -29,7 +29,7 @@ export default function App() {
 							<h1 className="heading text-4xl font-bold md:text-8xl">Uranus</h1>
 							<h1 className="heading text-4xl font-bold md:text-8xl">Neptune</h1>
 						</div>
-						<div className="relative mt-3 h-0.25 w-full">
+						<div className="relative mt-2 h-0.25 w-full">
 							<div className="absolute top-0 left-0 h-full w-full bg-gradient-to-r from-transparent via-white to-transparent"></div>
 						</div>
 					</div>

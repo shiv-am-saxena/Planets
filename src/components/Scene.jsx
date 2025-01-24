@@ -2,7 +2,11 @@
 import { useFrame, useLoader, useThree } from '@react-three/fiber';
 import * as THREE from 'three';
 import Sun from './Sun';
-import { createRef, useRef } from 'react';
+import { createRef, useEffect, useRef, useState } from 'react';
+import gsap from 'gsap';
+import { useGSAP } from '@gsap/react';
+
+gsap.registerPlugin(useGSAP);
 export default function Scene() {
 	const radius = 2;
 	const segments = 64;
@@ -47,12 +51,46 @@ export default function Scene() {
 			}
 		});
 	});
+	const grp = useRef();
+	const headings = document.querySelectorAll('.heading');
+	const [count, setCount] = useState(0);
+	useEffect(() => {
+		const positions = [-1.965, -1.57, -0.78, 0, 0.79, 1.57, 2.36, 3.14, 3.92];
+		let lastScrollTime = 0;
+		const gsapAnimationUp = () => {
+			gsap.to(grp.current.rotation, { x: 0, y: positions[count] });
+			gsap.to(headings, { duration: 1, y: `-=${100}%`, ease: 'power2.inOut' });
+		};
+		const resetState = () => {
+			gsap.to(grp.current.rotation, { x: 0.2, y: -1.965 });
+			gsap.to(headings, { duration: 1, y: 0, ease: 'power2.inOut' });
+		};
+		const scrollHandler = e => {
+			const now = Date.now();
+			if (now - lastScrollTime >= 2000) {
+				lastScrollTime = now;
+				if (e.deltaY > 0) {
+					setTimeout(() => {
+						setCount((count + 1) % 9);
+					}, 2000);
+					gsapAnimationUp();
+					if (count === 0) {
+						resetState();
+					}
+				}
+			}
+		};
+		window.addEventListener('wheel', scrollHandler);
+		return () => {
+			window.removeEventListener('wheel', scrollHandler);
+		};
+	}, [headings, count]);
 	return (
 		<>
-			<group rotation={[0.2, -1.96, 0]}>
+			<group rotation={[0.2, -1.965, 0]} ref={grp}>
 				<Sun />
-				{textures.map((texture, index) =>
-					(<mesh
+				{textures.map((texture, index) => (
+					<mesh
 						key={index}
 						ref={planetRefs.current[index]}
 						position={[
@@ -63,12 +101,12 @@ export default function Scene() {
 					>
 						<sphereGeometry args={[radius, segments, segments]} />
 						<meshPhysicalMaterial map={texture} />
-					{index === 5 && (
-						<mesh rotation={[-1.1,0,0]}>
-							<ringGeometry args={[2.4, 5, 64]}  />
-							<meshPhysicalMaterial map={ring} side={THREE.DoubleSide} />
-						</mesh>
-					)}
+						{index === 5 && (
+							<mesh rotation={[-1.1, 0, 0]}>
+								<ringGeometry args={[2.4, 5, 64]} />
+								<meshPhysicalMaterial map={ring} side={THREE.DoubleSide} />
+							</mesh>
+						)}
 					</mesh>
 				))}
 			</group>
