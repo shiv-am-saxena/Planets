@@ -42,7 +42,7 @@ export default function Scene() {
 		neptune,
 	];
 	const { gl } = useThree();
-	gl.setPixelRatio(window.devicePixelRatio > 2 ? 2 : window.devicePixelRatio);
+	gl.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 	const planetRefs = useRef(textures.map(() => createRef()));
 	useFrame((state, delta) => {
 		planetRefs.current.forEach(ref => {
