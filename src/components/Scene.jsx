@@ -57,14 +57,22 @@ export default function Scene() {
 	useEffect(() => {
 		const positions = [-1.965, -1.57, -0.78, 0, 0.79, 1.57, 2.36, 3.14, 3.92];
 		let lastScrollTime = 0;
+		let touchStartY = 0;
+		let touchEndY = 0;
+
+		// Animation for upward movement
 		const gsapAnimationUp = () => {
 			gsap.to(grp.current.rotation, { x: 0, y: positions[count] });
 			gsap.to(headings, { duration: 1, y: `-=${100}%`, ease: 'power2.inOut' });
 		};
+
+		// Reset state to the initial position
 		const resetState = () => {
 			gsap.to(grp.current.rotation, { x: 0.2, y: -1.965 });
 			gsap.to(headings, { duration: 1, y: 0, ease: 'power2.inOut' });
 		};
+
+		// Scroll handler for wheel event
 		const scrollHandler = e => {
 			const now = Date.now();
 			if (now - lastScrollTime >= 2000) {
@@ -80,9 +88,47 @@ export default function Scene() {
 				}
 			}
 		};
+
+		// Touch start handler
+		const touchStartHandler = e => {
+			touchStartY = e.touches[0].clientY;
+		};
+
+		// Touch move handler
+		const touchMoveHandler = e => {
+			touchEndY = e.touches[0].clientY;
+		};
+
+		// Touch end handler to detect swipe direction
+		const touchEndHandler = () => {
+			const now = Date.now();
+			if (now - lastScrollTime >= 2000) {
+				lastScrollTime = now;
+				if (touchStartY - touchEndY > 50) {
+					// Swipe Up
+					setTimeout(() => {
+						setCount((count + 1) % 9);
+					}, 2000);
+					gsapAnimationUp();
+					if (count === 0) {
+						resetState();
+					}
+				}
+			}
+		};
+
+		// Add event listeners for both wheel and touch events
 		window.addEventListener('wheel', scrollHandler);
+		window.addEventListener('touchstart', touchStartHandler);
+		window.addEventListener('touchmove', touchMoveHandler);
+		window.addEventListener('touchend', touchEndHandler);
+
+		// Cleanup event listeners on unmount
 		return () => {
 			window.removeEventListener('wheel', scrollHandler);
+			window.removeEventListener('touchstart', touchStartHandler);
+			window.removeEventListener('touchmove', touchMoveHandler);
+			window.removeEventListener('touchend', touchEndHandler);
 		};
 	}, [headings, count]);
 	return (
